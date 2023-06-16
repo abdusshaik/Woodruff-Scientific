@@ -36,13 +36,30 @@ total_costs_per_category = {
     for category, cost in supply_chain_costs_per_category.items()
 }
 
+# Calculate the accumulated costs over the years
+accumulated_costs = np.cumsum(supply_chain_costs)
+
+# Calculate the total supply chain cost for 1000 reactors
+total_reactors = 1000
+total_supply_chain_cost = accumulated_costs[-1] * total_reactors
+
+# Calculate the total power output over the 40-year period
+power_output_40_years = 10e9 * (years[-1] - years[0] + 1) * total_reactors
+
+# Calculate the cost per watt
+cost_per_watt = total_supply_chain_cost / power_output_40_years
+
+# Print the total supply chain cost and cost per watt
+print(f"Total supply chain cost for 1000 reactors: ${total_supply_chain_cost:.2f}")
+print(f"Cost per watt: ${cost_per_watt:.2f}")
+
 # Plot the Wright's learning curve for supply chain costs
 fig, ax = plt.subplots()
 
 # Plot the Wright's learning curve
 ax.plot(years, supply_chain_costs, label="Supply Chain Cost")
 ax.set_xlabel('Year')
-ax.set_ylabel('Cost')
+ax.set_ylabel('Cost ($100 million)')
 ax.set_title("Wright's Learning Curve: Supply Chain Cost over Time")
 
 # Calculate and plot the stacked bar chart
@@ -56,18 +73,3 @@ ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
 
 # Show the plot
 plt.show()
-
-# Calculate the total cost over the 40-year period
-total_cost_40_years = np.sum(supply_chain_costs)
-
-# Calculate the total watt-hours produced over the 40-year period (assuming each reactor produces 1 GW)
-total_watt_hours_40_years = total_cost_40_years / 1e9
-
-# Calculate the average cost per watt over the 40-year period
-average_cost_per_watt_40_years = total_cost_40_years / (total_watt_hours_40_years * 1e9)
-
-# Limit the average cost per watt within the specified range
-average_cost_per_watt_40_years = np.clip(average_cost_per_watt_40_years, 0.05, 1.0)
-
-# Print the average cost per watt within the specified range
-print(f"Average cost per watt over 40 years: ${average_cost_per_watt_40_years:.2f}")
